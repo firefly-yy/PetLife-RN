@@ -5,7 +5,7 @@ import {
   GestureResponderEvent,
   TouchableOpacityProps,
 } from 'react-native';
-import {Icon, IconProps} from 'react-native-elements';
+import {Icon, IconProps} from '@rneui/themed';
 
 // 定义 IconButton 的 props 类型
 interface IconButtonProps extends TouchableOpacityProps {

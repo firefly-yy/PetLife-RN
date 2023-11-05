@@ -12,6 +12,7 @@ const BottomTabNavigator: React.FC = () => {
         component={HomeStack}
         options={{
           tabBarLabel: '首页', // 只设置底部标签的标题
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

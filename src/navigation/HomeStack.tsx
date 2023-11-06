@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
-import TestDetailScreen from '../screens/TestDetailScreen';
+import ItemDetailScreen from '../screens/ItemDetailScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +14,7 @@ const HomeStack: React.FC = () => {
       }}
     >
       <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='TestDetail' component={TestDetailScreen} />
+      <Stack.Screen name='ItemDetail' component={ItemDetailScreen} />
     </Stack.Navigator>
   );
 };

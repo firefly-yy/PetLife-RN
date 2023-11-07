@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import ProfileScreen from '../screens/ProfileScreen';
+import { defaultScreenOptions } from './navigationConfig';
 
 const Stack = createStackNavigator();
 
@@ -9,7 +10,7 @@ const ProfileStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName='Profile'
       screenOptions={{
-        headerShown: false, // 这会隐藏所有屏幕的顶部导航栏
+        ...defaultScreenOptions,
       }}
     >
       <Stack.Screen name='Profile' component={ProfileScreen} />

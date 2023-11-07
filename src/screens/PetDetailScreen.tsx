@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-const HomeScreen: React.FC = () => {
+const PetDetailScreen: React.FC = () => {
   const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <Text>HomeScreen</Text>
-      <Button title={'跳转到Profile'} onPress={() => navigation.navigate('PetDetail' as never)} />
+      <Text>Pet Detail Screen</Text>
+      <Button title='返回' onPress={() => navigation.goBack()} />
     </View>
   );
 };
@@ -21,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default PetDetailScreen;

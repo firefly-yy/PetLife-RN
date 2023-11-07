@@ -5,7 +5,7 @@ import HomeStack from './HomeStack';
 import ExploreStack from './ExploreStack';
 import ProfileStack from './ProfileStack';
 import MessagesStack from './MessagesStack';
-import PublishScreen from '../screens/PublishScreen';
+import PublishStack from './PublishStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,7 +44,7 @@ const BottomTabNavigator: React.FC = () => {
     >
       <Tab.Screen name='首页' component={HomeStack} />
       <Tab.Screen name='探索' component={ExploreStack} />
-      <Tab.Screen name='发布' component={PublishScreen} />
+      <Tab.Screen name='发布' component={PublishStack} />
       <Tab.Screen name='消息' component={MessagesStack} />
       <Tab.Screen name='个人主页' component={ProfileStack} />
     </Tab.Navigator>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MessagesScreen from '../screens/MessagesScreen';
+import { defaultScreenOptions } from './navigationConfig';
 
 const Stack = createStackNavigator();
 
@@ -9,7 +10,7 @@ const MessagesStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName='Messages'
       screenOptions={{
-        headerShown: false, // 这会隐藏所有屏幕的顶部导航栏
+        ...defaultScreenOptions,
       }}
     >
       <Stack.Screen name='Messages' component={MessagesScreen} />

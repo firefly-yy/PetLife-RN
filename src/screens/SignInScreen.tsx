@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const SignInScreen: React.FC = () => {
+  const { signIn } = useAuth();
   return (
     <View style={styles.container}>
       <Text>Sign In Screen</Text>
+      <Button title={'Sign In'} onPress={signIn} />
     </View>
   );
 };

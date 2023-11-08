@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const ProfileScreen: React.FC = () => {
+  console.log(useAuth().isLoggedIn);
   return (
     <View style={styles.container}>
       <Text>Profile Screen</Text>

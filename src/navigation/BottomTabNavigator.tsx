@@ -18,10 +18,10 @@ const BottomTabNavigator: React.FC = () => {
           let type = 'ionicon';
 
           switch (route.name) {
-            case '首页':
+            case '今日想法':
               iconName = focused ? 'home' : 'home-outline';
               break;
-            case '探索':
+            case '月榜':
               iconName = focused ? 'search' : 'search-outline';
               break;
             case '发布':
@@ -42,8 +42,8 @@ const BottomTabNavigator: React.FC = () => {
         headerShown: false, // 这样就不用在每个Tab.Screen里单独设置了
       })}
     >
-      <Tab.Screen name='首页' component={HomeStack} />
-      <Tab.Screen name='探索' component={ExploreStack} />
+      <Tab.Screen name='今日想法' component={HomeStack} />
+      <Tab.Screen name='月榜' component={ExploreStack} />
       <Tab.Screen name='发布' component={PublishStack} />
       <Tab.Screen name='消息' component={MessagesStack} />
       <Tab.Screen name='个人主页' component={ProfileStack} />

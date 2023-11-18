@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
 import SwipeableImage from '../features/SwipeableImage';
-import { theme } from '../theme/theme';
+import theme from '../theme/theme';
 
 interface PetCardProps {
   title: string;

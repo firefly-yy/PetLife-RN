@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
   };
   const signIn = (phoneNumber: string, password: string) => {
-    AV.User.logInWithMobilePhone(phoneNumber, password)
+    AV.User.signUp(phoneNumber, password)
       .then((user) => {
         setIsLoggedIn(true);
       })

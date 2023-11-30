@@ -14,13 +14,18 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
 });
 
+const validationSchemaForUsername = Yup.object().shape({
+  username: Yup.string().required('请输入用户名'),
+  password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
+});
+
 const LoginScreen: React.FC = () => {
   const { signIn } = useAuth();
   const navigation = useNavigation();
 
   return (
     <Formik
-      initialValues={{ phoneNumber: '', password: '' }}
+      initialValues={{ username: '', password: '' }}
       onSubmit={(values, { validateForm }) => {
         validateForm().then((errors) => {
           const errorKeys = Object.keys(errors) as Array<keyof typeof values>; // 类型断言
@@ -30,11 +35,11 @@ const LoginScreen: React.FC = () => {
             Alert.alert('错误', firstError);
           } else {
             // 如果没有错误，执行注册函数
-            signIn(values.phoneNumber, values.password);
+            signIn(values.username, values.password);
           }
         });
       }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchemaForUsername}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View style={styles.container}>
@@ -46,13 +51,13 @@ const LoginScreen: React.FC = () => {
               </View>
               <TextInput
                 placeholder={'用户名'}
-                onChangeText={handleChange('phoneNumber')}
-                value={values.phoneNumber}
+                onChangeText={handleChange('username')}
+                value={values.username}
                 style={styles.input}
               />
             </View>
-            {touched.phoneNumber && errors.phoneNumber && (
-              <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+            {touched.username && errors.username && (
+              <Text style={styles.errorText}>{errors.username}</Text>
             )}
           </View>
           <View>
@@ -128,6 +133,9 @@ const styles = StyleSheet.create({
     color: '#333', // Darker text for better readability
     marginLeft: 10,
     width: '90%',
+    flex: 1,
+    marginRight: 5,
+    height: 50,
   },
   button: {
     width: '60%',

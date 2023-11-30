@@ -113,7 +113,6 @@ const RegisterScreen: React.FC = () => {
                 secureTextEntry
                 maxLength={12}
                 style={styles.input}
-                inlineImageLeft={'search_icon'}
               />
             </View>
             {touched.password && errors.password && (
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sendCodeButton: {
-    borderRadius: 30,
+    borderRadius: 20,
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',

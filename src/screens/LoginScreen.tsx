@@ -103,17 +103,22 @@ const LoginScreen: React.FC = () => {
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
           </View>
+
           <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
             <Text style={styles.buttonText}>登录</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.new}>
-            <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
-              忘记密码?
-            </Text>
-            <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
-              创建新账户
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.bottomContainer}>
+            <TouchableOpacity>
+              <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
+                忘记密码?
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
+                创建新账户
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </Formik>
@@ -162,6 +167,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     height: 50,
   },
+
   button: {
     width: '60%',
     height: 45,
@@ -182,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  new: {
+  bottomContainer: {
     display: 'flex',
     flexDirection: 'row',
     height: 30,

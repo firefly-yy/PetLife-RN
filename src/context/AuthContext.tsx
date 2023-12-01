@@ -4,17 +4,18 @@
  * 3. 创建 useAuth，用于获取用户登录状态
  * 4. 在 App.tsx 中使用 AuthProvider 包裹整个应用,使用AuthConsumer来决定渲染哪个页面
  */
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 import AV from 'leancloud-storage/core';
 import { Alert } from 'react-native';
 
-interface AuthContextType {
+type AuthContextType = {
   isLoggedIn: boolean;
-  signIn: (phoneNumber: string, password: string) => void; // 用户登录
+  signInWithUsername: (username: string, password: string) => Promise<any>; // 用户登录
   signOut: () => void; // 用户登出
+  signUpWithUsername: (username: string, password: string) => Promise<any>;
   signUpWithCode: (phoneNumber: string, smsCode: string, password: string) => void; // 用户注册
   sendCode: (phoneNumber: string) => void; // 发送验证码
-}
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -52,17 +53,56 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return user.save();
       })
       .catch((error) => {
-        Alert.alert('注册失败', error.message);
+        let message: string;
+        switch (error.code) {
+          case 202: // 假设202是用户名已经存在
+            message = '用户名已经被占用';
+            break;
+          // 其他错误码处理
+          default:
+            message = error.message; // 默认错误消息
+        }
+        Alert.alert('注册失败', message);
       });
   };
-  const signIn = (phoneNumber: string, password: string) => {
-    AV.User.signUp(phoneNumber, password)
-      .then((user) => {
-        setIsLoggedIn(true);
-      })
-      .catch((error) => {
-        Alert.alert('登录失败', error.message);
-      });
+
+  const signUpWithUsername = async (username: string, password: string) => {
+    try {
+      return await AV.User.signUp(username, password);
+    } catch (error: any) {
+      let message: string;
+      switch (error.code) {
+        case 202: // 假设202是用户名已经存在
+          message = '用户名已经被占用';
+          break;
+        // 其他错误码处理
+        default:
+          message = error.message; // 默认错误消息
+      }
+      Alert.alert('注册失败', message);
+      throw error;
+    }
+  };
+  const signInWithUsername = async (username: string, password: string) => {
+    try {
+      const user = await AV.User.logIn(username, password);
+      setIsLoggedIn(true);
+      return user;
+    } catch (error: any) {
+      let message: string;
+      switch (error.code) {
+        case 210:
+          message = '密码错误，请重试';
+          break;
+        case 211:
+          message = '用户不存在';
+          break;
+        default:
+          message = '登录失败';
+      }
+      Alert.alert('登录失败', message);
+      throw error;
+    }
   };
   const signOut = () => {
     AV.User.logOut()
@@ -75,7 +115,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, signIn, signOut, signUpWithCode, sendCode }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        signInWithUsername,
+        signOut,
+        signUpWithCode,
+        sendCode,
+        signUpWithUsername,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

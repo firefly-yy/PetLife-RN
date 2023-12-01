@@ -5,18 +5,30 @@ import theme from '../theme/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useNavigation } from '@react-navigation/native';
 
-const validationSchema = Yup.object().shape({
-  phoneNumber: Yup.string()
-    .required('请输入手机号码')
-    .matches(/^[1][3-9][0-9]{9}$/, '请输入有效的手机号码'), // 这里是一个简单的中国手机号码正则表达式
-  smsCode: Yup.string().required('请输入验证码'),
+// const validationSchema = Yup.object().shape({
+//   phoneNumber: Yup.string()
+//     .required('请输入手机号码')
+//     .matches(/^[1][3-9][0-9]{9}$/, '请输入有效的手机号码'), // 这里是一个简单的中国手机号码正则表达式
+//   smsCode: Yup.string().required('请输入验证码'),
+//   password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
+// });
+
+const validationSchemaForUsername = Yup.object().shape({
+  username: Yup.string().required('请输入用户名'),
   password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
 });
 
 const RegisterScreen: React.FC = () => {
-  const { signUpWithCode, sendCode } = useAuth();
+  const { signUpWithUsername } = useAuth();
   const [countdown, setCountdown] = useState(0);
+  const navigation = useNavigation();
+  const [focusStatus, setFocusStatus] = useState({
+    usernameFocused: false,
+    passwordFocused: false,
+  });
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (countdown > 0) {
@@ -27,15 +39,14 @@ const RegisterScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, [countdown]);
 
-  const handleSendCode = () => {
-    // 发送验证码逻辑
-    // ...
-    setCountdown(60);
-  };
+  // const handleSendCode = () => {
+  //   setCountdown(60);
+  // };
 
   return (
     <Formik
-      initialValues={{ phoneNumber: '', smsCode: '', password: '' }}
+      // initialValues={{ phoneNumber: '', smsCode: '', password: '' }}
+      initialValues={{ username: '', password: '' }}
       onSubmit={(values, { validateForm }) => {
         validateForm().then((errors) => {
           const errorKeys = Object.keys(errors) as Array<keyof typeof values>; // 类型断言
@@ -45,64 +56,107 @@ const RegisterScreen: React.FC = () => {
             Alert.alert('错误', firstError);
           } else {
             // 如果没有错误，执行注册函数
-            signUpWithCode(values.phoneNumber, values.smsCode, values.password);
+            // signUpWithCode(values.phoneNumber, values.smsCode, values.password);
+            signUpWithUsername(values.username, values.password)
+              .then(() => {
+                Alert.alert('注册成功', '您已成功注册。', [
+                  { text: 'OK', onPress: () => navigation.navigate('Login' as never) },
+                ]);
+              })
+              .catch();
           }
         });
       }}
-      validationSchema={validationSchema}
+      // validationSchema={validationSchema}
+      validationSchema={validationSchemaForUsername}
     >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+      {({ handleChange, handleSubmit, values, errors, touched }) => (
         <View style={styles.container}>
           <Image source={require('../assets/pet.png')} style={styles.logo} />
+          {/*<View>*/}
+          {/*  <View style={styles.inputContainer}>*/}
+          {/*    <View style={styles.icon}>*/}
+          {/*      <Icon name='phone' size={15} color='white' />*/}
+          {/*    </View>*/}
+          {/*    <TextInput*/}
+          {/*      placeholder={'手机号'}*/}
+          {/*      onChangeText={handleChange('phoneNumber')}*/}
+          {/*      value={values.phoneNumber}*/}
+          {/*      style={styles.input}*/}
+          {/*    />*/}
+          {/*  </View>*/}
+          {/*  {touched.phoneNumber && errors.phoneNumber && (*/}
+          {/*    <Text style={styles.errorText}>{errors.phoneNumber}</Text>*/}
+          {/*  )}*/}
+          {/*</View>*/}
+
+          {/*<View>*/}
+          {/*  <View style={styles.inputContainer}>*/}
+          {/*    <View style={styles.icon}>*/}
+          {/*      <Icon name='code' size={15} color='white' />*/}
+          {/*    </View>*/}
+          {/*    <TextInput*/}
+          {/*      placeholder={'验证码'}*/}
+          {/*      onChangeText={handleChange('smsCode')}*/}
+          {/*      value={values.smsCode}*/}
+          {/*      style={styles.input}*/}
+          {/*    />*/}
+          {/*    <TouchableOpacity*/}
+          {/*      style={{*/}
+          {/*        ...styles.sendCodeButton,*/}
+          {/*        backgroundColor: countdown > 0 ? '#ccc' : '#F5B849',*/}
+          {/*      }}*/}
+          {/*      onPress={handleSendCode}*/}
+          {/*      disabled={countdown > 0}*/}
+          {/*    >*/}
+          {/*      <Text style={styles.sendCodeButtonText}>*/}
+          {/*        {' '}*/}
+          {/*        {countdown > 0 ? `${countdown}秒` : '发送验证码'}*/}
+          {/*      </Text>*/}
+          {/*    </TouchableOpacity>*/}
+          {/*  </View>*/}
+          {/*  {touched.smsCode && errors.smsCode && (*/}
+          {/*    <Text style={styles.errorText}>{errors.smsCode}</Text>*/}
+          {/*  )}*/}
+          {/*</View>*/}
           <View>
-            <View style={styles.inputContainer}>
+            <View
+              style={
+                focusStatus.usernameFocused
+                  ? {
+                      ...styles.inputContainer,
+                      borderColor: '#F5B849',
+                    }
+                  : styles.inputContainer
+              }
+            >
               <View style={styles.icon}>
-                <Icon name='phone' size={15} color='white' />
+                <Icon name='user' size={15} color='white' />
               </View>
               <TextInput
-                placeholder={'手机号'}
-                onChangeText={handleChange('phoneNumber')}
-                value={values.phoneNumber}
+                placeholder={'用户名'}
+                onChangeText={handleChange('username')}
+                value={values.username}
                 style={styles.input}
+                onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
+                onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
               />
             </View>
-            {touched.phoneNumber && errors.phoneNumber && (
-              <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+            {touched.username && errors.username && (
+              <Text style={styles.errorText}>{errors.username}</Text>
             )}
           </View>
-
           <View>
-            <View style={styles.inputContainer}>
-              <View style={styles.icon}>
-                <Icon name='code' size={15} color='white' />
-              </View>
-              <TextInput
-                placeholder={'验证码'}
-                onChangeText={handleChange('smsCode')}
-                value={values.smsCode}
-                style={styles.input}
-              />
-              <TouchableOpacity
-                style={{
-                  ...styles.sendCodeButton,
-                  backgroundColor: countdown > 0 ? '#ccc' : '#F5B849',
-                }}
-                onPress={handleSendCode}
-                disabled={countdown > 0}
-              >
-                <Text style={styles.sendCodeButtonText}>
-                  {' '}
-                  {countdown > 0 ? `${countdown}秒` : '发送验证码'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {touched.smsCode && errors.smsCode && (
-              <Text style={styles.errorText}>{errors.smsCode}</Text>
-            )}
-          </View>
-
-          <View>
-            <View style={styles.inputContainer}>
+            <View
+              style={
+                focusStatus.passwordFocused
+                  ? {
+                      ...styles.inputContainer,
+                      borderColor: '#F5B849',
+                    }
+                  : styles.inputContainer
+              }
+            >
               <View style={styles.icon}>
                 <Icon name='lock' size={15} color='white' />
               </View>
@@ -113,13 +167,20 @@ const RegisterScreen: React.FC = () => {
                 secureTextEntry
                 maxLength={12}
                 style={styles.input}
+                onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
+                onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
               />
             </View>
             {touched.password && errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              handleSubmit();
+            }}
+          >
             <Text style={styles.buttonText}>注册</Text>
           </TouchableOpacity>
         </View>

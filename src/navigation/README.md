@@ -7,8 +7,8 @@
 | route名称   | route路径     | route描述 |
 |-----------|-------------|---------|
 | Home      | /home       | 首页      |
-| SignIn    | /sign_in    | 登录页     |
-| SignUp    | /sign_up    | 注册页     |
+| Login     | /login      | 登录页     |
+| Register  | /register   | 注册页     |
 | PetList   | /pet_list   | 宠物列表页   |
 | PetDetail | /pet_detail | 宠物详情页   |
 | Explore   | /explore    | 发现页     |

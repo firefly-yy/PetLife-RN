@@ -7,12 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-const validationSchema = Yup.object().shape({
-  phoneNumber: Yup.string()
-    .required('请输入手机号码')
-    .matches(/^[1][3-9][0-9]{9}$/, '请输入有效的手机号码'), // 这里是一个简单的中国手机号码正则表达式
-  password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
-});
+// const validationSchema = Yup.object().shape({
+//   phoneNumber: Yup.string()
+//     .required('请输入手机号码')
+//     .matches(/^[1][3-9][0-9]{9}$/, '请输入有效的手机号码'), // 这里是一个简单的中国手机号码正则表达式
+//   password: Yup.string().required('请输入密码').min(6, '密码长度至少6位'),
+// });
 
 const validationSchemaForUsername = Yup.object().shape({
   username: Yup.string().required('请输入用户名'),
@@ -20,9 +20,12 @@ const validationSchemaForUsername = Yup.object().shape({
 });
 
 const LoginScreen: React.FC = () => {
-  const { signIn } = useAuth();
+  const { signInWithUsername } = useAuth();
   const navigation = useNavigation();
-
+  const [focusStatus, setFocusStatus] = useState({
+    usernameFocused: false,
+    passwordFocused: false,
+  });
   return (
     <Formik
       initialValues={{ username: '', password: '' }}
@@ -35,17 +38,26 @@ const LoginScreen: React.FC = () => {
             Alert.alert('错误', firstError);
           } else {
             // 如果没有错误，执行注册函数
-            signIn(values.username, values.password);
+            signInWithUsername(values.username, values.password).catch();
           }
         });
       }}
       validationSchema={validationSchemaForUsername}
     >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+      {({ handleChange, handleSubmit, values, errors, touched }) => (
         <View style={styles.container}>
           <Image source={require('../assets/pet.png')} style={styles.logo} />
           <View>
-            <View style={styles.inputContainer}>
+            <View
+              style={
+                focusStatus.usernameFocused
+                  ? {
+                      ...styles.inputContainer,
+                      borderColor: '#007BFF',
+                    }
+                  : styles.inputContainer
+              }
+            >
               <View style={styles.icon}>
                 <Icon name='user' size={15} color='white' />
               </View>
@@ -54,6 +66,8 @@ const LoginScreen: React.FC = () => {
                 onChangeText={handleChange('username')}
                 value={values.username}
                 style={styles.input}
+                onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
+                onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
               />
             </View>
             {touched.username && errors.username && (
@@ -61,7 +75,16 @@ const LoginScreen: React.FC = () => {
             )}
           </View>
           <View>
-            <View style={styles.inputContainer}>
+            <View
+              style={
+                focusStatus.passwordFocused
+                  ? {
+                      ...styles.inputContainer,
+                      borderColor: '#007BFF',
+                    }
+                  : styles.inputContainer
+              }
+            >
               <View style={styles.icon}>
                 <Icon name='lock' size={15} color='white' />
               </View>
@@ -72,6 +95,8 @@ const LoginScreen: React.FC = () => {
                 secureTextEntry
                 maxLength={12}
                 style={styles.input}
+                onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
+                onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
               />
             </View>
             {touched.password && errors.password && (
@@ -82,10 +107,10 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.buttonText}>登录</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.new}>
-            <Text style={styles.text} onPress={() => navigation.navigate('SignUp' as never)}>
+            <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
               忘记密码?
             </Text>
-            <Text style={styles.text} onPress={() => navigation.navigate('SignUp' as never)}>
+            <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
               创建新账户
             </Text>
           </TouchableOpacity>

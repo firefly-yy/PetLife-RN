@@ -9,8 +9,8 @@ const Stack = createStackNavigator();
 const AuthStack: React.FC = () => {
   return (
     <Stack.Navigator initialRouteName='SignIn' screenOptions={{ ...defaultScreenOptions }}>
-      <Stack.Screen name='SignIn' component={LoginScreen} options={{ title: '登录' }} />
-      <Stack.Screen name='SignUp' component={RegisterScreen} options={{ title: '注册' }} />
+      <Stack.Screen name='Login' component={LoginScreen} options={{ title: '登录' }} />
+      <Stack.Screen name='Register' component={RegisterScreen} options={{ title: '注册' }} />
     </Stack.Navigator>
   );
 };

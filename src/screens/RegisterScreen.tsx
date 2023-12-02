@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import theme from '../theme/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -192,7 +191,7 @@ const RegisterScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: '#FAFAFA',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,

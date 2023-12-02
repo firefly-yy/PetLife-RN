@@ -37,7 +37,7 @@ const BottomTabNavigator: React.FC = () => {
 
           return <Icon name={iconName} type={type} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: '#00AFFF',
         tabBarInactiveTintColor: 'gray',
         headerShown: false, // 这样就不用在每个Tab.Screen里单独设置了
       })}

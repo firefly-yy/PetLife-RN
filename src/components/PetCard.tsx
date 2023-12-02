@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
 import SwipeableImage from '../features/SwipeableImage';
-import theme from '../theme/theme';
 
 interface PetCardProps {
   title: string;
@@ -18,7 +17,7 @@ const PetCard: React.FC<PetCardProps> = ({ title, location, imagesUrl, price, on
         style={styles.card}
         onPress={onPress} // 设置点击事件处理函数
       >
-        <SwipeableImage imagesUrl={imagesUrl} dotColor={theme.colors.dot} />
+        <SwipeableImage imagesUrl={imagesUrl} dotColor='#FF6347' />
         <View style={styles.info}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.location}>{location}</Text>

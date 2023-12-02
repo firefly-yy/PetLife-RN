@@ -1,16 +1,20 @@
-const theme = {
-  colors: {
-    primary: '#4CAF50',
-    secondary: '#2196F3',
-    background: '#FAFAFA',
-    text: '#333333',
-    dot: '#FF6347',
-    lightBlue: '#00CFFF',
+import { extendTheme } from 'native-base';
+const themeColors = {
+  primary: {
+    50: '#e3f2fd',
+    100: '#bbdefb',
+    200: '#90caf9',
+    300: '#64b5f6',
+    400: '#42a5f5',
+    500: '#00CFFF', // 主题色
+    600: '#1e88e5',
+    700: '#1976d2',
+    800: '#1565c0',
+    900: '#0d47a1',
   },
-  fonts: {
-    primary: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
-    accent: '"Pacifico", "Lobster", cursive',
-  },
+  // 根据需要添加其他颜色
 };
 
-export default theme;
+const theme = extendTheme({
+  colors: themeColors,
+});

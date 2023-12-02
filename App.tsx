@@ -6,6 +6,7 @@ import AuthStack from './src/navigation/AuthStack';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import AV from 'leancloud-storage/core';
 import * as adapters from '@leancloud/platform-adapters-react-native';
+import { NativeBaseProvider } from 'native-base';
 
 AV.setAdapters(adapters as any);
 AV.init({
@@ -18,13 +19,15 @@ const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <NavigationContainer>
-          <AuthConsumer />
-        </NavigationContainer>
-      </AuthProvider>
-    </QueryClientProvider>
+    <NativeBaseProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <NavigationContainer>
+            <AuthConsumer />
+          </NavigationContainer>
+        </AuthProvider>
+      </QueryClientProvider>
+    </NativeBaseProvider>
   );
 };
 export default App;

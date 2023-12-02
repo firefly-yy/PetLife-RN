@@ -3,20 +3,15 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } fr
 
 interface IdeaPopProps {
   title: string;
-  location: string;
-  price: string;
   onPress: () => void;
 }
 
 const { width } = Dimensions.get('screen');
 
-const IdeaPop: React.FC<IdeaPopProps> = ({ title, location, price, onPress }) => {
+const IdeaPop: React.FC<IdeaPopProps> = ({ title, onPress }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={styles.card}
-        onPress={onPress} // 设置点击事件处理函数
-      >
+      <TouchableOpacity style={styles.card} onPress={onPress}>
         <View style={styles.info}>
           <Text style={styles.title}>{title}</Text>
         </View>

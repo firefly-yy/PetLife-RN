@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import theme from '../theme/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
@@ -109,7 +108,11 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
           <View style={styles.bottomContainer}>
             <TouchableOpacity>
-              <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
+              <Text
+                style={{ ...styles.text, color: 'grey' }}
+                onPress={() => navigation.navigate('Register' as never)}
+                disabled={true}
+              >
                 忘记密码?
               </Text>
             </TouchableOpacity>
@@ -128,7 +131,7 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: '#FAFAFA',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,

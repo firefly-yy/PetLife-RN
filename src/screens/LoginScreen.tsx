@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { KeyboardAvoidingView } from 'native-base';
 
 // const validationSchema = Yup.object().shape({
 //   phoneNumber: Yup.string()
@@ -44,85 +54,90 @@ const LoginScreen: React.FC = () => {
       validationSchema={validationSchemaForUsername}
     >
       {({ handleChange, handleSubmit, values, errors, touched }) => (
-        <View style={styles.container}>
-          <Image source={require('../assets/pet.png')} style={styles.logo} />
-          <View>
-            <View
-              style={
-                focusStatus.usernameFocused
-                  ? {
-                      ...styles.inputContainer,
-                      borderColor: '#007BFF',
-                    }
-                  : styles.inputContainer
-              }
-            >
-              <View style={styles.icon}>
-                <Icon name='user' size={15} color='white' />
-              </View>
-              <TextInput
-                placeholder={'用户名'}
-                onChangeText={handleChange('username')}
-                value={values.username}
-                style={styles.input}
-                onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
-                onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
-              />
-            </View>
-            {touched.username && errors.username && (
-              <Text style={styles.errorText}>{errors.username}</Text>
-            )}
-          </View>
-          <View>
-            <View
-              style={
-                focusStatus.passwordFocused
-                  ? {
-                      ...styles.inputContainer,
-                      borderColor: '#007BFF',
-                    }
-                  : styles.inputContainer
-              }
-            >
-              <View style={styles.icon}>
-                <Icon name='lock' size={15} color='white' />
-              </View>
-              <TextInput
-                placeholder={'密码'}
-                onChangeText={handleChange('password')}
-                value={values.password}
-                secureTextEntry
-                maxLength={12}
-                style={styles.input}
-                onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
-                onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
-              />
-            </View>
-            {touched.password && errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-          </View>
-
-          <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
-            <Text style={styles.buttonText}>登录</Text>
-          </TouchableOpacity>
-          <View style={styles.bottomContainer}>
-            <TouchableOpacity>
-              <Text
-                style={{ ...styles.text, color: 'grey' }}
-                onPress={() => navigation.navigate('Register' as never)}
-                disabled={true}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.container}>
+            <Image source={require('../assets/pet.png')} style={styles.logo} />
+            <View>
+              <View
+                style={
+                  focusStatus.usernameFocused
+                    ? {
+                        ...styles.inputContainer,
+                        borderColor: '#007BFF',
+                      }
+                    : styles.inputContainer
+                }
               >
-                忘记密码?
-              </Text>
+                <View style={styles.icon}>
+                  <Icon name='user' size={15} color='white' />
+                </View>
+                <TextInput
+                  placeholder={'用户名'}
+                  onChangeText={handleChange('username')}
+                  value={values.username}
+                  style={styles.input}
+                  onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
+                  onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
+                />
+              </View>
+              {touched.username && errors.username && (
+                <Text style={styles.errorText}>{errors.username}</Text>
+              )}
+            </View>
+            <View>
+              <View
+                style={
+                  focusStatus.passwordFocused
+                    ? {
+                        ...styles.inputContainer,
+                        borderColor: '#007BFF',
+                      }
+                    : styles.inputContainer
+                }
+              >
+                <View style={styles.icon}>
+                  <Icon name='lock' size={15} color='white' />
+                </View>
+                <TextInput
+                  placeholder={'密码'}
+                  onChangeText={handleChange('password')}
+                  value={values.password}
+                  secureTextEntry
+                  maxLength={12}
+                  style={styles.input}
+                  onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
+                  onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
+                />
+              </View>
+              {touched.password && errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
+              <Text style={styles.buttonText}>登录</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
-                创建新账户
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.bottomContainer}>
+              <TouchableOpacity>
+                <Text
+                  style={{ ...styles.text, color: 'grey' }}
+                  onPress={() => navigation.navigate('Register' as never)}
+                  disabled={true}
+                >
+                  忘记密码?
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.text} onPress={() => navigation.navigate('Register' as never)}>
+                  创建新账户
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       )}
     </Formik>
   );

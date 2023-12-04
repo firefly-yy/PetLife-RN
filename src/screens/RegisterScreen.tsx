@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import { KeyboardAvoidingView } from 'native-base';
 
 // const validationSchema = Yup.object().shape({
 //   phoneNumber: Yup.string()
@@ -70,119 +80,124 @@ const RegisterScreen: React.FC = () => {
       validationSchema={validationSchemaForUsername}
     >
       {({ handleChange, handleSubmit, values, errors, touched }) => (
-        <View style={styles.container}>
-          <Image source={require('../assets/pet.png')} style={styles.logo} />
-          {/*<View>*/}
-          {/*  <View style={styles.inputContainer}>*/}
-          {/*    <View style={styles.icon}>*/}
-          {/*      <Icon name='phone' size={15} color='white' />*/}
-          {/*    </View>*/}
-          {/*    <TextInput*/}
-          {/*      placeholder={'手机号'}*/}
-          {/*      onChangeText={handleChange('phoneNumber')}*/}
-          {/*      value={values.phoneNumber}*/}
-          {/*      style={styles.input}*/}
-          {/*    />*/}
-          {/*  </View>*/}
-          {/*  {touched.phoneNumber && errors.phoneNumber && (*/}
-          {/*    <Text style={styles.errorText}>{errors.phoneNumber}</Text>*/}
-          {/*  )}*/}
-          {/*</View>*/}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.container}>
+            <Image source={require('../assets/pet.png')} style={styles.logo} />
+            {/*<View>*/}
+            {/*  <View style={styles.inputContainer}>*/}
+            {/*    <View style={styles.icon}>*/}
+            {/*      <Icon name='phone' size={15} color='white' />*/}
+            {/*    </View>*/}
+            {/*    <TextInput*/}
+            {/*      placeholder={'手机号'}*/}
+            {/*      onChangeText={handleChange('phoneNumber')}*/}
+            {/*      value={values.phoneNumber}*/}
+            {/*      style={styles.input}*/}
+            {/*    />*/}
+            {/*  </View>*/}
+            {/*  {touched.phoneNumber && errors.phoneNumber && (*/}
+            {/*    <Text style={styles.errorText}>{errors.phoneNumber}</Text>*/}
+            {/*  )}*/}
+            {/*</View>*/}
 
-          {/*<View>*/}
-          {/*  <View style={styles.inputContainer}>*/}
-          {/*    <View style={styles.icon}>*/}
-          {/*      <Icon name='code' size={15} color='white' />*/}
-          {/*    </View>*/}
-          {/*    <TextInput*/}
-          {/*      placeholder={'验证码'}*/}
-          {/*      onChangeText={handleChange('smsCode')}*/}
-          {/*      value={values.smsCode}*/}
-          {/*      style={styles.input}*/}
-          {/*    />*/}
-          {/*    <TouchableOpacity*/}
-          {/*      style={{*/}
-          {/*        ...styles.sendCodeButton,*/}
-          {/*        backgroundColor: countdown > 0 ? '#ccc' : '#F5B849',*/}
-          {/*      }}*/}
-          {/*      onPress={handleSendCode}*/}
-          {/*      disabled={countdown > 0}*/}
-          {/*    >*/}
-          {/*      <Text style={styles.sendCodeButtonText}>*/}
-          {/*        {' '}*/}
-          {/*        {countdown > 0 ? `${countdown}秒` : '发送验证码'}*/}
-          {/*      </Text>*/}
-          {/*    </TouchableOpacity>*/}
-          {/*  </View>*/}
-          {/*  {touched.smsCode && errors.smsCode && (*/}
-          {/*    <Text style={styles.errorText}>{errors.smsCode}</Text>*/}
-          {/*  )}*/}
-          {/*</View>*/}
-          <View>
-            <View
-              style={
-                focusStatus.usernameFocused
-                  ? {
-                      ...styles.inputContainer,
-                      borderColor: '#F5B849',
-                    }
-                  : styles.inputContainer
-              }
-            >
-              <View style={styles.icon}>
-                <Icon name='user' size={15} color='white' />
+            {/*<View>*/}
+            {/*  <View style={styles.inputContainer}>*/}
+            {/*    <View style={styles.icon}>*/}
+            {/*      <Icon name='code' size={15} color='white' />*/}
+            {/*    </View>*/}
+            {/*    <TextInput*/}
+            {/*      placeholder={'验证码'}*/}
+            {/*      onChangeText={handleChange('smsCode')}*/}
+            {/*      value={values.smsCode}*/}
+            {/*      style={styles.input}*/}
+            {/*    />*/}
+            {/*    <TouchableOpacity*/}
+            {/*      style={{*/}
+            {/*        ...styles.sendCodeButton,*/}
+            {/*        backgroundColor: countdown > 0 ? '#ccc' : '#F5B849',*/}
+            {/*      }}*/}
+            {/*      onPress={handleSendCode}*/}
+            {/*      disabled={countdown > 0}*/}
+            {/*    >*/}
+            {/*      <Text style={styles.sendCodeButtonText}>*/}
+            {/*        {' '}*/}
+            {/*        {countdown > 0 ? `${countdown}秒` : '发送验证码'}*/}
+            {/*      </Text>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*  </View>*/}
+            {/*  {touched.smsCode && errors.smsCode && (*/}
+            {/*    <Text style={styles.errorText}>{errors.smsCode}</Text>*/}
+            {/*  )}*/}
+            {/*</View>*/}
+            <View>
+              <View
+                style={
+                  focusStatus.usernameFocused
+                    ? {
+                        ...styles.inputContainer,
+                        borderColor: '#F5B849',
+                      }
+                    : styles.inputContainer
+                }
+              >
+                <View style={styles.icon}>
+                  <Icon name='user' size={15} color='white' />
+                </View>
+                <TextInput
+                  placeholder={'用户名'}
+                  onChangeText={handleChange('username')}
+                  value={values.username}
+                  style={styles.input}
+                  onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
+                  onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
+                />
               </View>
-              <TextInput
-                placeholder={'用户名'}
-                onChangeText={handleChange('username')}
-                value={values.username}
-                style={styles.input}
-                onFocus={() => setFocusStatus({ ...focusStatus, usernameFocused: true })}
-                onBlur={() => setFocusStatus({ ...focusStatus, usernameFocused: false })}
-              />
+              {touched.username && errors.username && (
+                <Text style={styles.errorText}>{errors.username}</Text>
+              )}
             </View>
-            {touched.username && errors.username && (
-              <Text style={styles.errorText}>{errors.username}</Text>
-            )}
-          </View>
-          <View>
-            <View
-              style={
-                focusStatus.passwordFocused
-                  ? {
-                      ...styles.inputContainer,
-                      borderColor: '#F5B849',
-                    }
-                  : styles.inputContainer
-              }
-            >
-              <View style={styles.icon}>
-                <Icon name='lock' size={15} color='white' />
+            <View>
+              <View
+                style={
+                  focusStatus.passwordFocused
+                    ? {
+                        ...styles.inputContainer,
+                        borderColor: '#F5B849',
+                      }
+                    : styles.inputContainer
+                }
+              >
+                <View style={styles.icon}>
+                  <Icon name='lock' size={15} color='white' />
+                </View>
+                <TextInput
+                  placeholder={'密码'}
+                  onChangeText={handleChange('password')}
+                  value={values.password}
+                  secureTextEntry
+                  maxLength={12}
+                  style={styles.input}
+                  onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
+                  onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
+                />
               </View>
-              <TextInput
-                placeholder={'密码'}
-                onChangeText={handleChange('password')}
-                value={values.password}
-                secureTextEntry
-                maxLength={12}
-                style={styles.input}
-                onFocus={() => setFocusStatus({ ...focusStatus, passwordFocused: true })}
-                onBlur={() => setFocusStatus({ ...focusStatus, passwordFocused: false })}
-              />
+              {touched.password && errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
             </View>
-            {touched.password && errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                handleSubmit();
+              }}
+            >
+              <Text style={styles.buttonText}>注册</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              handleSubmit();
-            }}
-          >
-            <Text style={styles.buttonText}>注册</Text>
-          </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
       )}
     </Formik>
   );

@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, Platform } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, Platform, Alert } from 'react-native';
 import { Box, VStack, IconButton, Input, Icon, Flex, KeyboardAvoidingView } from 'native-base';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import IdeaPop from '../components/IdeaPop';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import { addIdea, getIdea } from '../api/idea';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 const HomeScreen: React.FC = () => {
-  const [idea, setIdea] = useState(''); // 状态用于存储用户的想法
-
   const navigation = useNavigation();
-  const { signOut } = useAuth();
+  const { signOut, getCurrentUser } = useAuth();
+  const [idea, setIdea] = useState(''); // 状态用于存储用户的想法
+  const [filter, setFilter] = useState('');
+  const [searchTriggered, setSearchTriggered] = useState(false);
+  const { data: ideas } = useQuery({
+    queryKey: ['ideas'],
+    queryFn: () => getIdea(filter),
+    // enabled: searchTriggered, // 查询仅在 searchTriggered 为 true 时触发
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: addIdea,
+    onSuccess: () => {
+      setIdea(''); // 发布后清空输入框
+      Alert.alert('发布成功');
+    },
+    onError: (error) => {
+      // 错误处理逻辑
+      // Invalidate and refetch
+      // queryClient.invalidateQueries({ queryKey: ['todos'] })
+      Alert.alert('发布失败', error.message);
+    },
+  });
+
   // 处理发布想法
   const handlePublish = () => {
-    console.log('Idea Published:', idea);
-    setIdea(''); // 发布后清空输入框
+    mutate(idea);
   };
 
   return (
@@ -34,6 +56,8 @@ const HomeScreen: React.FC = () => {
               py='3'
               px='1'
               borderWidth='0'
+              onChangeText={setFilter}
+              value={filter}
               _focus={{
                 borderWidth: '1',
                 borderColor: 'cyan.500',
@@ -94,36 +118,6 @@ const HomeScreen: React.FC = () => {
             showsVerticalScrollIndicator={false}
           >
             <VStack space={4} alignItems='center' w='100%' px='3'>
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
               <IdeaPop
                 title={'Idea Title'}
                 onPress={() => {

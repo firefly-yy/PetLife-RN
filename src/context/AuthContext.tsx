@@ -4,7 +4,9 @@
  * 3. 创建 useAuth，用于获取用户登录状态
  * 4. 在 App.tsx 中使用 AuthProvider 包裹整个应用,使用AuthConsumer来决定渲染哪个页面
  */
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import AV from 'leancloud-storage/core';
 import { Alert } from 'react-native';
 
@@ -15,6 +17,7 @@ type AuthContextType = {
   signUpWithUsername: (username: string, password: string) => Promise<any>;
   signUpWithCode: (phoneNumber: string, smsCode: string, password: string) => void; // 用户注册
   sendCode: (phoneNumber: string) => void; // 发送验证码
+  getCurrentUser: () => Promise<any>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -86,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signInWithUsername = async (username: string, password: string) => {
     try {
       const user = await AV.User.logIn(username, password);
+      await AsyncStorage.setItem('userSessionToken', user.getSessionToken());
       setIsLoggedIn(true);
       return user;
     } catch (error: any) {
@@ -106,14 +110,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   const signOut = () => {
     AV.User.logOut()
-      .then(() => {
+      .then(async () => {
         setIsLoggedIn(false);
+        await AsyncStorage.removeItem('userSessionToken'); // 清除本地存储的会话信息
       })
       .catch((error) => {
         Alert.alert('退出登录失败', error.message);
       });
   };
 
+  const getCurrentUser = async () => {
+    return await AV.User.currentAsync();
+  };
+
+  const restoreUserSession = async () => {
+    const sessionToken = await AsyncStorage.getItem('userSessionToken');
+    if (sessionToken) {
+      // 使用 sessionToken 来恢复用户会话
+      try {
+        await AV.User.become(sessionToken);
+        setIsLoggedIn(true);
+      } catch (error) {
+        // ... 处理错误，比如 sessionToken 过期
+      }
+    }
+  };
+  useEffect(() => {
+    restoreUserSession();
+  }, []);
   return (
     <AuthContext.Provider
       value={{
@@ -123,6 +147,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signUpWithCode,
         sendCode,
         signUpWithUsername,
+        getCurrentUser,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, Platform, Alert } from 'react-native';
 import { Box, VStack, IconButton, Input, Icon, Flex, KeyboardAvoidingView } from 'native-base';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -12,12 +12,11 @@ const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const { signOut, getCurrentUser } = useAuth();
   const [idea, setIdea] = useState(''); // 状态用于存储用户的想法
+  const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState('');
-  const [searchTriggered, setSearchTriggered] = useState(false);
-  const { data: ideas } = useQuery({
-    queryKey: ['ideas'],
+  const { data } = useQuery({
+    queryKey: ['ideas', filter],
     queryFn: () => getIdea(filter),
-    // enabled: searchTriggered, // 查询仅在 searchTriggered 为 true 时触发
   });
 
   const { mutate } = useMutation({
@@ -30,13 +29,14 @@ const HomeScreen: React.FC = () => {
       // 错误处理逻辑
       // Invalidate and refetch
       // queryClient.invalidateQueries({ queryKey: ['todos'] })
-      Alert.alert('发布失败', error.message);
+      Alert.alert(error.message);
     },
   });
 
   // 处理发布想法
   const handlePublish = () => {
     mutate(idea);
+    console.log(data);
   };
 
   return (
@@ -56,8 +56,10 @@ const HomeScreen: React.FC = () => {
               py='3'
               px='1'
               borderWidth='0'
-              onChangeText={setFilter}
-              value={filter}
+              value={inputValue}
+              onChangeText={setInputValue}
+              onSubmitEditing={() => setFilter(inputValue)}
+              returnKeyType={'search'}
               _focus={{
                 borderWidth: '1',
                 borderColor: 'cyan.500',
@@ -118,14 +120,16 @@ const HomeScreen: React.FC = () => {
             showsVerticalScrollIndicator={false}
           >
             <VStack space={4} alignItems='center' w='100%' px='3'>
-              <IdeaPop
-                title={'Idea Title'}
-                onPress={() => {
-                  console.log('Idea clicked');
-                }}
-              />
-              {/* Empty state (conditionally rendered) */}
-              {/* {ideas.length === 0 && <Text>No ideas to show</Text>} */}
+              {data?.map((item) => {
+                return (
+                  <IdeaPop
+                    title={item.content}
+                    onPress={() => {
+                      console.log('Idea clicked');
+                    }}
+                  />
+                );
+              })}
             </VStack>
           </ScrollView>
           {/*<Button*/}

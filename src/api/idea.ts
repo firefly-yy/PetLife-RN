@@ -9,7 +9,10 @@ export const addIdea = async (idea: string) => {
   if (!currentUser) {
     throw new Error('用户未登录');
   }
-  ideaObj.set('content', idea);
+  if (!idea) {
+    throw new Error('请输入想法');
+  }
+  if (idea) ideaObj.set('content', idea);
   ideaObj.set('author', currentUser);
 
   return await ideaObj.save();

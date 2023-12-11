@@ -18,8 +18,8 @@ export const addIdea = async (idea: string) => {
   return await ideaObj.save();
 };
 
-export const getIdea = async (filter: string) => {
-  const query = new AV.Query('Idea');
+export const getIdea = async (filter: string, skip = 0, limit = 10) => {
+  const query = new AV.Query('Idea').skip(skip).limit(limit);
 
   // 当 filter 非空时，应用筛选条件
   if (filter) {

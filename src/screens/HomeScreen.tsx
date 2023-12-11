@@ -6,7 +6,7 @@ import IdeaPop from '../components/IdeaPop';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { addIdea, getIdea } from '../api/idea';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -14,6 +14,8 @@ const HomeScreen: React.FC = () => {
   const [idea, setIdea] = useState(''); // 状态用于存储用户的想法
   const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState('');
+  const queryClient = useQueryClient();
+
   const { data } = useQuery({
     queryKey: ['ideas', filter],
     queryFn: () => getIdea(filter),
@@ -24,6 +26,7 @@ const HomeScreen: React.FC = () => {
     onSuccess: () => {
       setIdea(''); // 发布后清空输入框
       Alert.alert('发布成功');
+      queryClient.invalidateQueries({ queryKey: ['ideas'] });
     },
     onError: (error) => {
       // 错误处理逻辑

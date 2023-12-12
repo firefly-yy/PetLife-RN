@@ -18,21 +18,28 @@ export const addIdea = async (idea: string) => {
   return await ideaObj.save();
 };
 
-export const getIdea = async (filter: string, skip = 0, limit = 10) => {
-  const query = new AV.Query('Idea').skip(skip).limit(limit);
+export const getIdea = async (filter: string, pageParam = 0) => {
+  const limit = 10;
+  const query = new AV.Query('Idea');
+  query.skip(pageParam * limit); // 更新 skip 值
+  query.limit(limit);
 
-  // 当 filter 非空时，应用筛选条件
   if (filter) {
     query.contains('content', filter);
   }
 
-  query.include('author'); // 确保加载关联的作者信息
+  query.include('author');
 
   const results = await query.find();
-  return results.map((idea) => ({
-    id: idea.id,
-    content: idea.get('content'),
-    author: idea.get('author')?.getUsername(), // 获取作者的用户名
-    likes: idea.get('likes') || 0, // 获取点赞数，如果未定义则默认为 0
-  }));
+  const hasMore = results?.length === limit; // 假设如果返回的数据少于 limit，则没有更多数据
+
+  return {
+    items: results.map((idea) => ({
+      id: idea.id,
+      content: idea.get('content'),
+      author: idea.get('author')?.getUsername(),
+      likes: idea.get('likes') || 0,
+    })),
+    nextCursor: hasMore ? pageParam + 1 : null, // 如果有更多数据，增加页码
+  };
 };

@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, Platform, Alert } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  Platform,
+  Alert,
+  FlatList,
+  Text,
+} from 'react-native';
 import { Box, VStack, IconButton, Input, Icon, Flex, KeyboardAvoidingView } from 'native-base';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import IdeaPop from '../components/IdeaPop';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { addIdea, getIdea } from '../api/idea';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -16,9 +24,15 @@ const HomeScreen: React.FC = () => {
   const [filter, setFilter] = useState('');
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  // const { data } = useQuery({
+  //   queryKey: ['ideas', filter],
+  //   queryFn: () => getIdea(filter),
+  // });
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, ...result } = useInfiniteQuery({
     queryKey: ['ideas', filter],
-    queryFn: () => getIdea(filter),
+    queryFn: ({ pageParam }) => getIdea(filter, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
   const { mutate } = useMutation({
@@ -30,8 +44,6 @@ const HomeScreen: React.FC = () => {
     },
     onError: (error) => {
       // 错误处理逻辑
-      // Invalidate and refetch
-      // queryClient.invalidateQueries({ queryKey: ['todos'] })
       Alert.alert(error.message);
     },
   });
@@ -39,7 +51,6 @@ const HomeScreen: React.FC = () => {
   // 处理发布想法
   const handlePublish = () => {
     mutate(idea);
-    console.log(data);
   };
 
   return (
@@ -117,24 +128,24 @@ const HomeScreen: React.FC = () => {
               />
             </ScrollView>
           </Flex>
-
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+          <FlatList
+            data={result.data?.pages.flatMap((page) => page.items)}
+            renderItem={({ item }) => (
+              <IdeaPop
+                title={item.content}
+                onPress={() => {
+                  console.log('Idea clicked');
+                }}
+              />
+            )}
             showsVerticalScrollIndicator={false}
-          >
-            <VStack space={4} alignItems='center' w='100%' px='3'>
-              {data?.map((item) => {
-                return (
-                  <IdeaPop
-                    title={item.content}
-                    onPress={() => {
-                      console.log('Idea clicked');
-                    }}
-                  />
-                );
-              })}
-            </VStack>
-          </ScrollView>
+            onEndReached={() => {
+              if (!isFetchingNextPage && hasNextPage) {
+                fetchNextPage();
+              }
+            }}
+            onEndReachedThreshold={0.5}
+          />
           {/*<Button*/}
           {/*  onPress={() => navigation.navigate('PetDetail' as never)}*/}
           {/*  colorScheme='cyan'*/}

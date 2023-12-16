@@ -20,7 +20,12 @@ export const addIdea = async (idea: string) => {
 
 export const getIdea = async (filter: string, pageParam = 0) => {
   const limit = 10;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to start of the day
+
   const query = new AV.Query('Idea');
+  query.greaterThanOrEqualTo('createdAt', today); // Only fetch ideas created today
+
   query.skip(pageParam * limit); // 更新 skip 值
   query.limit(limit);
 

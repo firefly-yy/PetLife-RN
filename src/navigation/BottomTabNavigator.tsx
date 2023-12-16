@@ -24,7 +24,7 @@ const BottomTabNavigator: React.FC = () => {
             case '月榜':
               iconName = focused ? 'search' : 'search-outline';
               break;
-            case '发布':
+            case '历史':
               iconName = focused ? 'add-circle' : 'add-circle-outline';
               break;
             case '消息':
@@ -44,7 +44,7 @@ const BottomTabNavigator: React.FC = () => {
     >
       <Tab.Screen name='今日想法' component={HomeStack} />
       <Tab.Screen name='月榜' component={ExploreStack} />
-      <Tab.Screen name='发布' component={PublishStack} />
+      <Tab.Screen name='历史' component={PublishStack} />
       <Tab.Screen name='消息' component={MessagesStack} />
       <Tab.Screen name='个人主页' component={ProfileStack} />
     </Tab.Navigator>

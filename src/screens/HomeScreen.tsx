@@ -7,6 +7,7 @@ import {
   Alert,
   FlatList,
   Text,
+  View,
 } from 'react-native';
 import { Box, VStack, IconButton, Input, Icon, Flex, KeyboardAvoidingView } from 'native-base';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -55,6 +56,11 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <Text>100字以内</Text>
+        <Text>500字以内</Text>
+        <Text>1000字以内</Text>
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
